@@ -156,17 +156,17 @@
             <div class="row">
                 <div class="col-md-6">
                     <label>* Hàng tối thiểu/Ngày: </label>
-                    <input class="form-control" type="number" name="hangtoithieu" value="5" />
+                    <input id="hangtoithieu" class="form-control" type="number" name="hangtoithieu" value="1" />
                 </div>
                 <div class="col-md-6">
                     <label>* Hàng tối đa/Ngày: </label>
-                    <input class="form-control" type="number" name="hangtoida" value="10" />
+                    <input id="hangtoida" class="form-control" type="number" name="hangtoida" value="10" />
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label>* Tên khách hàng</label>
-            <input class="form-control" type="text" name="tenkh" value="abc" />
+            <input class="form-control" type="text" name="tenkh" value="" />
         </div>
         <div class="form-group">
             <label>Địa chỉ</label>
@@ -180,31 +180,31 @@
             <div class="row">
                 <div class="col-md-6">
                     <label>* Tổng nhập n-3: </label>
-                    <input class="form-control" type="number" name="tongnhap3" value="1000000" />
+                    <input class="form-control" type="number" name="tongnhap3" value="" />
                 </div>
                 <div class="col-md-6">
                     <label>* Tổng xuất n-3: </label>
-                    <input class="form-control" type="number" name="tongxuat3" value="2000000" />
+                    <input class="form-control" type="number" name="tongxuat3" value="" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label>* Tổng nhập n-2: </label>
-                    <input class="form-control" type="number" name="tongnhap2" value="1000000"/>
+                    <input class="form-control" type="number" name="tongnhap2" value=""/>
                 </div>
                 <div class="col-md-6">
                     <label>* Tổng xuất n-2: </label>
-                    <input class="form-control" type="number" name="tongxuat2" value="2000000" />
+                    <input class="form-control" type="number" name="tongxuat2" value="" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label>* Tổng nhập n-1: </label>
-                    <input class="form-control" type="number" name="tongnhap1" value="1000000" />
+                    <input class="form-control" type="number" name="tongnhap1" value="" />
                 </div>
                 <div class="col-md-6">
                     <label>* Tổng xuất n-1: </label>
-                    <input class="form-control" type="number" name="tongxuat1" value="2000000" />
+                    <input class="form-control" type="number" name="tongxuat1" value="" />
                 </div>
             </div>
         </div>
@@ -212,3 +212,11 @@
         <a id="getfile" href="/Home/GetFile" class="btn btn-default">Download file gần đây</a>
     </form>
 </div>
+<script>
+    $("#hangtoida").on("change keyup", () => {
+        if ($("#hangtoida").val() < $("#hangtoithieu").val()) {
+            alert("Hàng tối thiếu phải nhỏ hơn hàng tối đa");
+            $("#hangtoida").val("");
+        }
+    })
+</script>
