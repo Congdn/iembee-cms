@@ -1,31 +1,213 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    ViewBag.Title = "IEMBEE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                Widget settings form goes here
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn blue">Save changes</button>
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<!-- /.modal -->
+<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+<!-- BEGIN STYLE CUSTOMIZER -->
+<div class="theme-panel hidden-xs hidden-sm">
+    <div class="toggler">
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="toggler-close">
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="theme-options">
+        <div class="theme-option theme-colors clearfix">
+            <span>
+                THEME COLOR
+            </span>
+            <ul>
+                <li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default">
+                </li>
+                <li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue">
+                </li>
+                <li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue">
+                </li>
+                <li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey">
+                </li>
+                <li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light">
+                </li>
+                <li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2">
+                </li>
+            </ul>
+        </div>
+        <div class="theme-option">
+            <span>
+                Layout
+            </span>
+            <select class="layout-option form-control input-sm">
+                <option value="fluid" selected="selected">Fluid</option>
+                <option value="boxed">Boxed</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Header
+            </span>
+            <select class="page-header-option form-control input-sm">
+                <option value="fixed" selected="selected">Fixed</option>
+                <option value="default">Default</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Top Menu Dropdown
+            </span>
+            <select class="page-header-top-dropdown-style-option form-control input-sm">
+                <option value="light" selected="selected">Light</option>
+                <option value="dark">Dark</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Sidebar Mode
+            </span>
+            <select class="sidebar-option form-control input-sm">
+                <option value="fixed">Fixed</option>
+                <option value="default" selected="selected">Default</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Sidebar Menu
+            </span>
+            <select class="sidebar-menu-option form-control input-sm">
+                <option value="accordion" selected="selected">Accordion</option>
+                <option value="hover">Hover</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Sidebar Style
+            </span>
+            <select class="sidebar-style-option form-control input-sm">
+                <option value="default" selected="selected">Default</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Sidebar Position
+            </span>
+            <select class="sidebar-pos-option form-control input-sm">
+                <option value="left" selected="selected">Left</option>
+                <option value="right">Right</option>
+            </select>
+        </div>
+        <div class="theme-option">
+            <span>
+                Footer
+            </span>
+            <select class="page-footer-option form-control input-sm">
+                <option value="fixed">Fixed</option>
+                <option value="default" selected="selected">Default</option>
+            </select>
+        </div>
     </div>
+</div>
+<!-- END STYLE CUSTOMIZER -->
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="index.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Dashboard</a>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">
+    Dashboard
+</h3>
+<!-- END PAGE HEADER-->
+<div class="content container">
+    @Html.ValidationSummary()
+    <form action="Home/ExportFile" class="row" method="post" enctype="application/x-www-form-urlencoded">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label>Chọn file...</label>
+            <input class="form-control" type="file" name="fileInput" accept=".xlsx,.xls"/>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Hàng tối thiểu/Ngày: </label>
+                    <input class="form-control" type="number" name="hangtoithieu" />
+                </div>
+                <div class="col-md-6">
+                    <label>Hàng tối đa/Ngày: </label>
+                    <input class="form-control" type="number" name="hangtoida" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Tên khách hàng</label>
+            <input class="form-control" type="text" name="tenkh" value="" />
+        </div>
+        <div class="form-group">
+            <label>Địa chỉ</label>
+            <input class="form-control" type="text" name="diachi" value="" />
+        </div>
+        <div class="form-group">
+            <label>Điện thoại</label>
+            <input class="form-control" type="text" name="dienthoai" value="" />
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Tổng nhập n-3: </label>
+                    <input class="form-control" type="number" name="tongnhap3" />
+                </div>
+                <div class="col-md-6">
+                    <label>Tổng xuất n-3: </label>
+                    <input class="form-control" type="number" name="tongxuat3" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Tổng nhập n-2: </label>
+                    <input class="form-control" type="number" name="tongnhap2" />
+                </div>
+                <div class="col-md-6">
+                    <label>Tổng xuất n-2: </label>
+                    <input class="form-control" type="number" name="tongxuat2" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Tổng nhập n-1: </label>
+                    <input class="form-control" type="number" name="tongnhap1" />
+                </div>
+                <div class="col-md-6">
+                    <label>Tổng xuất n-1: </label>
+                    <input class="form-control" type="number" name="tongxuat1" />
+                </div>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Xuất file..." />
+    </form>
 </div>
