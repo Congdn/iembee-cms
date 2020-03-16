@@ -23,7 +23,7 @@ namespace iembee.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(Data model)
+        public async Task<ActionResult> Index(Data model)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace iembee.Controllers
                 }
 
                 //Export data
-                Task.WhenAll(
+                await Task.WhenAll(
                     Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
                     Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
                     Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai))
@@ -219,7 +219,7 @@ namespace iembee.Controllers
                     double soLuong = quantity + random.Next(-2, 3);
                     if (soLuong <= 0)
                     {
-                        ws.Cells[i, 5] = 1;
+                        ws.Cells[i, 5] = 0;
                         ws.Cells[i, 7] = Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
                     }
                     else
