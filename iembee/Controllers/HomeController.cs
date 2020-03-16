@@ -80,12 +80,17 @@ namespace iembee.Controllers
                 //    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
                 //    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai))
                 //);
-                await Task.Run(() =>
-                {
-                    ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                    ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                    ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                });
+                //await Task.Run(() =>
+                //{
+                //    ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
+                //    ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
+                //    ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
+                //});
+                Parallel.Invoke(
+                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
+                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
+                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)
+                );
                 //Return file rar
                 var zipPath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + DateTime.Now.Month + ".zip");
                 if (System.IO.File.Exists(zipPath))
@@ -359,6 +364,7 @@ namespace iembee.Controllers
                 Excel.Range range2 = ws2.UsedRange;
                 row2s = range2.Rows.Count;
                 //Add cột số lượng
+                double soluong_thua = 0;
                 for (int i = 7; i <= row2s; i++)
                 {
                     double soLuong = 0;
@@ -371,12 +377,19 @@ namespace iembee.Controllers
 
                     if (soLuong < 0)
                     {
-                        ws2.Cells[i, 5] = 0;
-                        //ws2.Cells[i, 7] = Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
-                        ws2.Cells[i, 7] = 0;
+                        soluong_thua = Math.Abs(soLuong);
+                        ws2.Cells[i, 5] = 1;
+                        ws2.Cells[i, 7] = Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
+                        //ws2.Cells[i, 7] = 0;
                     }
                     else
                     {
+                        if(soluong_thua > 0)
+                        {
+                            double rdSoluongthua = random.Next(0, (int)soluong_thua);
+                            soLuong -= rdSoluongthua;
+                            soluong_thua -= rdSoluongthua;
+                        }
                         ws2.Cells[i, 5] = soLuong;
                         ws2.Cells[i, 7] = (decimal)soLuong * Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
                     }
