@@ -216,7 +216,13 @@ namespace iembee.Controllers
                 //Add cột số lượng
                 for (int i = 7; i <= row2s; i++)
                 {
-                    double soLuong = quantity + random.Next(-2, 3);
+                    double soLuong = 0;
+                    if (quantity <= 1)
+                        soLuong = quantity + random.Next(0, 1);
+                    else if (quantity <= 2)
+                        soLuong = quantity + random.Next(-1, 2);
+                    else
+                        soLuong = quantity + random.Next(-2, 3);
                     if (soLuong <= 0)
                     {
                         ws.Cells[i, 5] = 0;
@@ -350,8 +356,15 @@ namespace iembee.Controllers
                 //Add cột số lượng
                 for (int i = 7; i <= row2s; i++)
                 {
-                    double soLuong = quantity + random.Next(-2, 3);
-                    if (soLuong <= 0)
+                    double soLuong = 0;
+                    if (quantity <= 1)
+                        soLuong = quantity + random.Next(0, 1);
+                    else if (quantity <= 2)
+                        soLuong = quantity + random.Next(-1, 2);
+                    else
+                        soLuong = quantity + random.Next(-2, 3);
+
+                    if (soLuong < 0)
                     {
                         ws2.Cells[i, 5] = 0;
                         //ws2.Cells[i, 7] = Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
