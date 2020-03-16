@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using Logger.Contracts;
+using System.Threading.Tasks;
 
 namespace iembee.Controllers
 {
@@ -33,7 +34,7 @@ namespace iembee.Controllers
                 model.fileInput.SaveAs(filePath);
 
                 //Read data
-                var datas = new List<Dictionary<string,string>>();
+                var datas = new List<Dictionary<string, string>>();
 
                 Excel.Application app = new Excel.Application();
                 Excel.Workbook wb = app.Workbooks.Open(filePath);
@@ -62,7 +63,7 @@ namespace iembee.Controllers
                 Marshal.FinalReleaseComObject(app);
                 //
 
-                var savePath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_"+DateTime.Now.Month), model.tenkh + "_"+DateTime.Now.ToString("dd-MM-yy"));
+                var savePath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + "_" + DateTime.Now.ToString("dd-MM-yy"));
                 if (!Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
@@ -74,12 +75,14 @@ namespace iembee.Controllers
                 }
 
                 //Export data
-                ExportFile(model.hangtoida, model.hangtoithieu, DateTime.Now.AddMonths(-1).Month, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                ExportFile(model.hangtoida, model.hangtoithieu, DateTime.Now.Month, model.tongnhap2, model.tongxuat2, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                ExportFile(model.hangtoida, model.hangtoithieu, DateTime.Now.AddMonths(1).Month, model.tongnhap1, model.tongxuat1, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
+                Task.WhenAll(
+                    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
+                    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
+                    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai))
+                );
 
                 //Return file rar
-                var zipPath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + DateTime.Now.Month+ ".zip");
+                var zipPath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + DateTime.Now.Month + ".zip");
                 if (System.IO.File.Exists(zipPath))
                 {
                     System.IO.File.Delete(zipPath);
@@ -87,10 +90,9 @@ namespace iembee.Controllers
                 ZipFile.CreateFromDirectory(savePath, zipPath);
 
                 ModelState.AddModelError("", "Hoàn thành");
-                //return new FilePathResult(zipPath, "application/zip");
+                return new FilePathResult(zipPath, "application/zip");
             }
 
-            //var body = request.Content.ReadAsByteArrayAsync();
             return View(model);
         }
 
@@ -103,12 +105,12 @@ namespace iembee.Controllers
             {
                 var model = new Data();
                 ModelState.AddModelError("", "Chưa export file cho tháng này");
-                return View("Index",model);
+                return View("Index", model);
             }
             return new FilePathResult(filePath, "application/zip");
         }
 
-        public void ExportFile(double SoLuongToiDa, double SoLuongToiThieu, int Month, decimal BuyTotal, decimal SaleTotal, List<Dictionary<string, string>> lswRes, string Path, string companyName="", string Address="", string Phone="")
+        public void ExportFile(double SoLuongToiDa, double SoLuongToiThieu, int Month, decimal BuyTotal, decimal SaleTotal, List<Dictionary<string, string>> lswRes, string Path, string companyName = "", string Address = "", string Phone = "")
         {
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbook wb = excelApp.Workbooks.Add(Type.Missing);
@@ -146,9 +148,9 @@ namespace iembee.Controllers
                 ws.Cells[3, 1].Font.Size = 12;
                 //Tiêu đề
                 if (Month == 12)
-                    ws.Cells[4, 1].Value = "Bảng tổng hợp doanh số bán hàng tháng " + Month + "/2018";
+                    ws.Cells[4, 1].Value = "Bảng tổng hợp doanh số bán hàng tháng " + Month + "/" + DateTime.Now.AddYears(-1).Year;
                 else
-                    ws.Cells[4, 1].Value = "Bảng tổng hợp doanh số bán hàng tháng " + Month + "/2019";
+                    ws.Cells[4, 1].Value = "Bảng tổng hợp doanh số bán hàng tháng " + Month + "/" + DateTime.Now.Year;
                 ws.Cells[4, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                 ws.Cells[4, 1].Font.Size = 12;
                 //Kẻ
@@ -212,7 +214,7 @@ namespace iembee.Controllers
                 Excel.Range range = ws.UsedRange;
                 var row2s = range.Rows.Count;
                 //Add cột số lượng
-                for (int i = 7; i <= rows; i++)
+                for (int i = 7; i <= row2s; i++)
                 {
                     double soLuong = quantity + random.Next(-2, 3);
                     if (soLuong <= 0)
@@ -267,9 +269,9 @@ namespace iembee.Controllers
                 ws2.Cells[3, 1].Font.Size = 12;
                 //Tiêu đề
                 if (Month == 12)
-                    ws2.Cells[4, 1].Value = "Bảng tổng hợp doanh số nhập hàng tháng " + Month + "/2018";
+                    ws2.Cells[4, 1].Value = "Bảng tổng hợp doanh số nhập hàng tháng " + Month + "/" + DateTime.Now.AddYears(-1).Year;
                 else
-                    ws2.Cells[4, 1].Value = "Bảng tổng hợp doanh số nhập hàng tháng " + Month + "/2019";
+                    ws2.Cells[4, 1].Value = "Bảng tổng hợp doanh số nhập hàng tháng " + Month + "/" + DateTime.Now.Year;
                 ws2.Cells[4, 1].HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                 ws2.Cells[4, 1].Font.Size = 12;
                 //Kẻ
@@ -324,7 +326,8 @@ namespace iembee.Controllers
                             }
                             if (j == 5)
                             {
-                                if (int.TryParse(item[item.Keys.ToList().ElementAt(j - 2)], out int giaban)){
+                                if (int.TryParse(item[item.Keys.ToList().ElementAt(j - 2)], out int giaban))
+                                {
                                     excelBuyTotal += Convert.ToDecimal(giaban);
                                 }
                                 else
