@@ -23,7 +23,7 @@ namespace iembee.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(Data model)
+        public ActionResult Index(Data model)
         {
             if (ModelState.IsValid)
             {
@@ -75,22 +75,23 @@ namespace iembee.Controllers
                 }
 
                 //Export data
-                //await Task.WhenAll(
-                //    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
-                //    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)),
-                //    Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai))
-                //);
+                var thang12 = Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai));
+                var thang1 = Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai));
+                var thang2 = Task.Run(() => ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai));
+
+                Task.WaitAll(thang12, thang1, thang2);
+
                 //await Task.Run(() =>
                 //{
                 //    ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
                 //    ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
                 //    ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
                 //});
-                Parallel.Invoke(
-                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
-                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
-                    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)
-                );
+                //Parallel.Invoke(
+                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
+                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
+                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)
+                //);
                 //Return file rar
                 var zipPath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + DateTime.Now.Month + ".zip");
                 if (System.IO.File.Exists(zipPath))
