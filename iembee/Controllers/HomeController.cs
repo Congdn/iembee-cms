@@ -9,7 +9,6 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using Logger.Contracts;
 using System.Threading.Tasks;
 
 namespace iembee.Controllers
@@ -17,6 +16,7 @@ namespace iembee.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        [OutputCache(Duration = 10, VaryByParam = "*")]
         public ActionResult Index()
         {
             return View();
@@ -220,7 +220,8 @@ namespace iembee.Controllers
                     if (soLuong <= 0)
                     {
                         ws.Cells[i, 5] = 0;
-                        ws.Cells[i, 7] = Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
+                        //ws.Cells[i, 7] = Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
+                        ws.Cells[i, 7] = 0;
                     }
                     else
                     {
@@ -352,8 +353,9 @@ namespace iembee.Controllers
                     double soLuong = quantity + random.Next(-2, 3);
                     if (soLuong <= 0)
                     {
-                        ws2.Cells[i, 5] = 1;
-                        ws2.Cells[i, 7] = Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
+                        ws2.Cells[i, 5] = 0;
+                        //ws2.Cells[i, 7] = Convert.ToDecimal(range2.Cells[i, 6].Value.ToString());
+                        ws2.Cells[i, 7] = 0;
                     }
                     else
                     {
