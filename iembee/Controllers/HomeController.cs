@@ -219,6 +219,7 @@ namespace iembee.Controllers
                 }
                 //Số lượng trung bình từ tổng nhập và tổng giá bán
                 double quantity = Math.Round(Convert.ToDouble(SaleTotal / excelSaleTotal));
+                double soluong_thua = 0;
                 //clear excelSaleTotal
                 excelSaleTotal = 0;
                 Excel.Range range = ws.UsedRange;
@@ -235,12 +236,19 @@ namespace iembee.Controllers
                         soLuong = quantity + random.Next(-2, 3);
                     if (soLuong <= 0)
                     {
-                        ws.Cells[i, 5] = 0;
-                        //ws.Cells[i, 7] = Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
-                        ws.Cells[i, 7] = 0;
+                        soluong_thua = Math.Abs(soLuong);
+                        ws.Cells[i, 5] = 1;
+                        ws.Cells[i, 7] = Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
                     }
                     else
                     {
+                        if (soluong_thua > 0)
+                        {
+                            double rdSoluongthua = random.Next(0, (int)soluong_thua);
+                            soLuong -= rdSoluongthua;
+                            soluong_thua -= rdSoluongthua;
+                        }
+
                         ws.Cells[i, 5] = soLuong;
                         ws.Cells[i, 7] = (decimal)soLuong * Convert.ToDecimal(range.Cells[i, 6].Value.ToString());
                     }
@@ -361,10 +369,10 @@ namespace iembee.Controllers
                 quantity = Math.Round(Convert.ToDouble(BuyTotal / excelBuyTotal));
                 //clear excelBuyTotal
                 excelBuyTotal = 0;
+                soluong_thua = 0;
                 Excel.Range range2 = ws2.UsedRange;
                 row2s = range2.Rows.Count;
                 //Add cột số lượng
-                double soluong_thua = 0;
                 for (int i = 7; i <= row2s; i++)
                 {
                     double soLuong = 0;
