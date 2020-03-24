@@ -10,6 +10,10 @@ using System.Web.UI.WebControls;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Net.Mail;
+using System.Configuration;
+using System.Net;
+using System.Net.Mime;
 
 namespace iembee.Controllers
 {
@@ -81,17 +85,6 @@ namespace iembee.Controllers
 
                 Task.WaitAll(thang12, thang1, thang2);
 
-                //await Task.Run(() =>
-                //{
-                //    ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                //    ExportFile(model.hangtoida, model.hangtoithieu, 1, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                //    ExportFile(model.hangtoida, model.hangtoithieu, 2, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai);
-                //});
-                //Parallel.Invoke(
-                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
-                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai),
-                //    () => ExportFile(model.hangtoida, model.hangtoithieu, 12, model.tongnhap3, model.tongxuat3, datas, savePath, model.tenkh, model.diachi, model.dienthoai)
-                //);
                 //Return file rar
                 var zipPath = Path.Combine(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), model.tenkh + DateTime.Now.Month + ".zip");
                 if (System.IO.File.Exists(zipPath))
@@ -100,25 +93,50 @@ namespace iembee.Controllers
                 }
                 ZipFile.CreateFromDirectory(savePath, zipPath);
 
-                ModelState.AddModelError("", "Hoàn thành");
-                return new FilePathResult(zipPath, "application/zip");
+                try
+                {
+                    SendFile(model, zipPath);
+                    ModelState.AddModelError("", "Hoàn thành");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi send file: "+ ex.Message);
+                    return View(model);
+                }
+                //ModelState.AddModelError("", "Hoàn thành");
+                //return new FilePathResult(zipPath, "application/zip");
             }
 
             return View(model);
         }
 
-        [HttpGet]
-        public ActionResult GetFile()
+        public void SendFile(Data model, string filePath)
         {
-            var filePath = Directory.EnumerateFiles(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month)).Where(file => file.ToLower().EndsWith(".zip")).FirstOrDefault();
-            //Directory.GetFiles(Server.MapPath("~/App_Data/file_of_mouth_" + DateTime.Now.Month), SearchOption.TopDirectoryOnly);
-            if (!System.IO.File.Exists(filePath))
+            var fromAddress = new MailAddress("congdaongo@channelvn.net");
+            var toAddress = new MailAddress("tunghvt@mbbank.com.vn");
+            string subject = "Return file " + model.tenkh;
+            string body = "File: " + model.tenkh;
+            Attachment data = new Attachment(
+                     filePath,
+                     MediaTypeNames.Application.Octet);
+            var smtp = new SmtpClient
             {
-                var model = new Data();
-                ModelState.AddModelError("", "Chưa export file cho tháng này");
-                return View("Index", model);
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                //DeliveryMethod = SmtpDeliveryMethod.Network,
+                Credentials = new NetworkCredential(fromAddress.Address, "Congdn@1234")
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                message.Attachments.Add(data);
+                smtp.Send(message);
             }
-            return new FilePathResult(filePath, "application/zip");
+
         }
 
         public void ExportFile(double SoLuongToiDa, double SoLuongToiThieu, int Month, decimal BuyTotal, decimal SaleTotal, List<Dictionary<string, string>> lswRes, string Path, string companyName = "", string Address = "", string Phone = "")
@@ -319,8 +337,8 @@ namespace iembee.Controllers
                 //
                 //Item
                 DateTime date2;
-                if (Month == 12) date2 = new DateTime(2018, Month, 1);
-                else date2 = new DateTime(2019, Month, 1);
+                if (Month == 12) date2 = new DateTime(DateTime.Now.Year - 1, Month, 1);
+                else date2 = new DateTime(DateTime.Now.Year, Month, 1);
                 decimal excelBuyTotal = 0;
                 autoNum = 1;
                 //Vẽ bảng theo ngày
@@ -393,7 +411,7 @@ namespace iembee.Controllers
                     }
                     else
                     {
-                        if(soluong_thua > 0)
+                        if (soluong_thua > 0)
                         {
                             double rdSoluongthua = random.Next(0, (int)soluong_thua);
                             soLuong -= rdSoluongthua;
